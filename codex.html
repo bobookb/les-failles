@@ -1,0 +1,1228 @@
+<title>Codex des Failles</title>
+<style>
+  :root{
+    --bg:#0a0910;
+    --panel:#15121e;
+    --panel-2:#1b1726;
+    --ink:#ece8f5;
+    --muted:#9691a8;
+    --ember:#e6465a;
+    --mirror:#37c9b8;
+    --violet:#8a7cf0;
+    --line:#2a2438;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Work Sans", system-ui, sans-serif;
+    font-size:15.5px;
+    line-height:1.55;
+    padding-left:max(18px, env(safe-area-inset-left,0px));
+    padding-right:max(18px, env(safe-area-inset-right,0px));
+  }
+  h1,h2,h3,h4{
+    font-family:"Cormorant Garamond", Georgia, serif;
+    font-weight:600;
+    text-wrap:balance;
+    margin:0;
+  }
+  .mono{font-family:"JetBrains Mono", ui-monospace, monospace;}
+  a{color:var(--mirror);}
+  .wrap{max-width:920px; margin:0 auto;}
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky; top:env(safe-area-inset-top,0px);
+    z-index:20;
+    background:rgba(10,9,16,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+    padding-block:14px;
+    margin-top:0;
+  }
+  .topbar-inner{
+    max-width:920px; margin:0 auto;
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  }
+  .back-link{
+    font-family:"JetBrains Mono", monospace;
+    font-size:0.72rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .back-link:hover{color:var(--mirror);}
+  .brand{
+    font-family:"Cormorant Garamond", Georgia, serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:1.4rem;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .brand em{color:var(--ember); font-style:italic;}
+  .search-wrap{margin-left:auto; flex:1 1 200px; max-width:280px;}
+  .search-wrap input{
+    width:100%;
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-family:"Work Sans", sans-serif;
+    font-size:0.86rem;
+    padding:9px 12px;
+    border-radius:2px;
+  }
+  .search-wrap input::placeholder{color:var(--muted);}
+  .search-wrap input:focus{outline:1px solid var(--violet); outline-offset:1px;}
+
+  /* ---------- tabs ---------- */
+  .tabs{
+    position:sticky; top:calc(env(safe-area-inset-top,0px) + 57px);
+    z-index:19;
+    background:var(--bg);
+    border-bottom:1px solid var(--line);
+    overflow-x:auto;
+    white-space:nowrap;
+    scrollbar-width:thin;
+  }
+  .tabs-inner{
+    max-width:920px; margin:0 auto;
+    display:flex; gap:4px;
+    padding-inline:2px;
+  }
+  .tab-btn{
+    font-family:"JetBrains Mono", monospace;
+    font-size:0.72rem;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--muted);
+    background:transparent;
+    border:none;
+    border-bottom:2px solid transparent;
+    padding:12px 14px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn.active{color:var(--ink);}
+  .tab-btn[data-accent="violet"].active{border-color:var(--violet);}
+  .tab-btn[data-accent="mirror"].active{border-color:var(--mirror);}
+  .tab-btn[data-accent="ember"].active{border-color:var(--ember);}
+
+  /* ---------- intro ---------- */
+  .intro{padding-block:28px 8px;}
+  .intro .eyebrow{
+    font-family:"JetBrains Mono", monospace;
+    font-size:0.7rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .intro h1{font-size:2.1rem; margin-top:8px; color:var(--ink);}
+  .intro p{color:var(--muted); max-width:70ch; margin-top:10px;}
+  .note-box{
+    margin-top:18px;
+    border-left:3px solid var(--ember);
+    background:var(--panel);
+    padding:14px 16px;
+    font-size:0.86rem;
+    color:var(--muted);
+  }
+  .note-box strong{color:var(--ink);}
+  .credit{
+    margin-top:14px;
+    font-family:"JetBrains Mono", monospace;
+    font-size:0.72rem;
+    color:var(--muted);
+  }
+
+  main{padding-block:24px 60px;}
+  .tab-panel section{margin-bottom:40px;}
+  .tab-panel h2{font-size:1.5rem; color:var(--ink); margin-bottom:4px;}
+  .section-sub{color:var(--muted); font-size:0.86rem; margin-bottom:18px;}
+
+  /* ---------- accordion (personnages principaux) ---------- */
+  .entry{
+    border:1px solid var(--line);
+    background:var(--panel);
+    margin-bottom:2px;
+  }
+  .entry-head{
+    width:100%;
+    display:flex; align-items:baseline; gap:12px;
+    background:transparent;
+    border:none;
+    color:var(--ink);
+    text-align:left;
+    padding:14px 16px;
+    cursor:pointer;
+    font-family:"Work Sans", sans-serif;
+  }
+  .entry-name{
+    font-family:"Cormorant Garamond", Georgia, serif;
+    font-weight:600;
+    font-size:1.2rem;
+  }
+  .entry-epithet{
+    color:var(--muted);
+    font-size:0.82rem;
+    font-style:italic;
+  }
+  .entry-chevron{
+    margin-left:auto;
+    color:var(--violet);
+    font-family:"JetBrains Mono", monospace;
+    transition:transform 0.15s ease;
+  }
+  .entry.open .entry-chevron{transform:rotate(45deg);}
+  .entry-body{
+    padding:0 16px 18px;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field h4{
+    font-family:"JetBrains Mono", monospace;
+    font-size:0.68rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--violet);
+    margin-bottom:6px;
+  }
+  .field p{color:var(--ink); font-size:0.92rem;}
+  .bullet-list, .rel-list{list-style:none; margin:0; padding:0;}
+  .bullet-list li, .rel-list li{
+    font-size:0.9rem; color:var(--ink);
+    padding:4px 0 4px 14px;
+    position:relative;
+  }
+  .bullet-list li::before, .rel-list li::before{
+    content:"–";
+    position:absolute; left:0; color:var(--muted);
+  }
+  .rel-list strong{color:var(--mirror);}
+
+  /* ---------- cards ---------- */
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:10px;
+  }
+  .card{
+    border:1px solid var(--line);
+    background:var(--panel);
+    padding:16px;
+  }
+  .card h4{font-size:1.05rem; color:var(--ink); margin-bottom:6px;}
+  .card p{color:var(--muted); font-size:0.86rem;}
+  .card-top{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:6px;}
+  .card-top h4{margin-bottom:0;}
+  .badge{
+    font-family:"JetBrains Mono", monospace;
+    font-size:0.62rem;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--ember);
+    border:1px solid var(--line);
+    padding:3px 7px;
+    white-space:nowrap;
+  }
+
+  /* ---------- timeline ---------- */
+  .timeline{border-left:2px solid var(--line); padding-left:18px; display:grid; gap:16px;}
+  .timeline-row{position:relative;}
+  .timeline-row::before{
+    content:""; position:absolute; left:-23px; top:5px;
+    width:8px; height:8px; border-radius:50%;
+    background:var(--mirror);
+  }
+  .timeline-period{
+    font-family:"JetBrains Mono", monospace;
+    font-size:0.7rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--mirror);
+    margin-bottom:3px;
+  }
+  .timeline-event{color:var(--ink); font-size:0.92rem;}
+
+  /* ---------- chapters ---------- */
+  .chap-list-codex{list-style:none; margin:0; padding:0; display:grid; gap:1px; background:var(--line); border:1px solid var(--line);}
+  .chap-list-codex li{
+    background:var(--panel);
+    padding:12px 16px;
+    display:flex; gap:14px;
+  }
+  .chap-num{color:var(--violet); font-size:0.9rem; min-width:2ch;}
+  .chap-title{color:var(--ink); font-weight:600; font-size:0.94rem;}
+  .chap-desc{color:var(--muted); font-size:0.86rem; margin-top:2px;}
+
+  /* ---------- mysteries ---------- */
+  .mystery-list{list-style:none; margin:0; padding:0; display:grid; gap:1px; background:var(--line); border:1px solid var(--line);}
+  .mystery-list li{
+    background:var(--panel);
+    padding:12px 16px;
+    color:var(--ink);
+    font-family:"Cormorant Garamond", Georgia, serif;
+    font-style:italic;
+    font-size:1.05rem;
+  }
+
+  /* ---------- lexicon ---------- */
+  .lex-grid{display:grid; gap:1px; background:var(--line); border:1px solid var(--line);}
+  .lex-item{
+    background:var(--panel);
+    padding:10px 16px;
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:12px;
+  }
+  .lex-term{color:var(--mirror); font-weight:600; font-size:0.88rem;}
+  .lex-def{color:var(--muted); font-size:0.88rem;}
+  @media (max-width:560px){
+    .lex-item{grid-template-columns:1fr;}
+  }
+
+  /* ---------- canon table ---------- */
+  .canon-table{width:100%; border-collapse:collapse; font-size:0.86rem;}
+  .canon-table th{
+    text-align:left;
+    font-family:"JetBrains Mono", monospace;
+    font-size:0.68rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    padding:8px 12px;
+    border-bottom:1px solid var(--line);
+  }
+  .canon-table td{
+    padding:9px 12px;
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+    vertical-align:top;
+  }
+  .canon-table td:first-child{color:var(--violet); font-weight:600; white-space:nowrap;}
+
+  .empty-state{color:var(--muted); font-style:italic; padding-block:20px;}
+
+  /* ---------- prose / quotes / status pills ---------- */
+  .prose{max-width:74ch; margin-bottom:8px;}
+  .prose p{color:var(--muted); margin-bottom:10px;}
+  .prose h4{
+    font-family:"JetBrains Mono", monospace;
+    font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--violet); margin:20px 0 6px;
+  }
+  .quote-block{
+    border-left:3px solid var(--violet);
+    background:var(--panel);
+    padding:14px 16px;
+    margin-block:14px;
+    font-family:"Cormorant Garamond", Georgia, serif;
+    font-style:italic;
+    font-size:1.05rem;
+    color:var(--ink);
+  }
+  .status-pill{
+    font-family:"JetBrains Mono", monospace;
+    font-size:0.66rem;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:3px 8px;
+    border:1px solid var(--line);
+    white-space:nowrap;
+  }
+  .status-etabli{color:var(--mirror);}
+  .status-nonconfirme{color:var(--violet);}
+  .status-nonrevele{color:var(--ember);}
+  .subsection-title{
+    font-size:1.2rem; color:var(--ink); margin:26px 0 10px;
+  }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding-block:30px 50px;
+    color:var(--muted);
+    font-size:0.8rem;
+    text-align:center;
+  }
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="index.html">&larr; Les Failles</a>
+    <span class="brand">Codex <em>des Failles</em></span>
+    <div class="search-wrap">
+      <input type="search" id="search" placeholder="Rechercher un nom, un lieu, un pouvoir…" aria-label="Rechercher dans le codex">
+    </div>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Sections du codex">
+  <div class="tabs-inner" id="tabsInner"></div>
+</nav>
+
+<div class="wrap">
+  <div class="intro">
+    <p class="eyebrow">Tome I &middot; L&rsquo;Anomalie Naissante &middot; canon uniquement</p>
+    <h1>Le Codex des Failles</h1>
+    <p>Ce codex rassemble les personnages, pouvoirs, lieux, objets, concepts et événements établis dans le Tome I de LES FAILLES. Le Tome I s&rsquo;organise en deux ensembles distincts&nbsp;: l&rsquo;<strong style="color:var(--ink)">Arc&nbsp;1</strong>, à fonction encyclopédique, présente les protagonistes et les grandes forces cosmiques&nbsp;; l&rsquo;<strong style="color:var(--ink)">Arc&nbsp;2 &mdash; L&rsquo;Ère du Renouveau</strong> déplace le récit dans Neo&#8209;Memoria, la réalité reconstruite après l&rsquo;Apocalypse.</p>
+    <div class="note-box">
+      <strong>Avertissement de canon —</strong> ce document n&rsquo;a pas vocation à remplacer le texte du Tome I : il l&rsquo;organise. Lorsqu&rsquo;un élément est mystérieux, incomplet ou présenté sous plusieurs états, il reste présenté comme tel plutôt que d&rsquo;inventer une explication. Le Tome II &mdash; Les Fils Croisés &mdash; est volontairement exclu de ce codex.
+    </div>
+    <p class="credit mono">Crédit d&rsquo;idée originale &middot; Nassim Delbos &amp; Garrice Relaix</p>
+  </div>
+</div>
+
+<main class="wrap" id="main"></main>
+
+<footer>Codex des Failles &middot; document de référence, Tome I uniquement</footer>
+
+<script>
+window.CODEX = {
+
+  meta: {
+    credit: "Nassim Delbos & Garrice Relaix",
+    warning: "Ce document ne cherche pas à remplacer le texte du Tome I. Il l’organise. Lorsqu’un élément est mystérieux, incomplet ou présenté sous plusieurs états, il reste présenté comme tel plutôt que d’inventer une explication. Le bloc encyclopédique détaillant les origines, pouvoirs et motivations du Maître des Ruines a été retiré de la version numérique destinée à Fyctia ; les révélations narratives du Tome I concernant ce personnage restent toutefois référencées ici.",
+    arc1: "L’Arc 1 présente les protagonistes, leurs pouvoirs, leurs origines, leurs relations, leurs affrontements et les grandes forces cosmiques. Il donne notamment les informations nécessaires sur l’Omniscient, le Destructeur Originel, Noé, Nollan, Lenni, Sigma, Barbier Daniel, Poinson, Marty, Dufaud, Merel, Merlets/AWP God et l’Apocalypse humaine.",
+    arc2: "L’Arc 2 déplace le lecteur dans une réalité reconstruite après l’Apocalypse. Neo-Memoria devient le cadre principal. Les personnages doivent comprendre ce qui reste de l’ancien monde, pourquoi certains disparus pourraient exister ailleurs et pourquoi la réalité semble présenter des anomalies."
+  },
+
+  personnagesPrincipaux: [
+    {
+      name: "L’Omniscient", epithet: "Architecte cosmique",
+      body: [
+        ["Identité et fonction", "L’Omniscient est le créateur/architecte de l’univers de l’œuvre. Il connaît les événements, les personnages et les structures de son monde à un niveau qui dépasse celui des autres protagonistes. Il ne doit pas être désigné par un nom civil dans les fiches de l’œuvre."],
+        ["Rôle dans l’œuvre", "Architecte cosmique et figure méta-narrative centrale."],
+        ["Personnalité", "Calme, ironique, mystérieux et souvent volontairement frustrant. Il sait quand une information doit être révélée et quand elle doit rester cachée. Son comportement montre qu’il contrôle aussi le rythme du récit."],
+        ["Pouvoirs et capacités", ["Connaissance extrêmement vaste de l’univers.", "Manipulation d’événements et de situations.", "Brisure du quatrième mur.", "Voyage entre œuvres et univers de fiction.", "Possibilité exceptionnelle de sortir de son univers.", "Intervention directe limitée lorsqu’il agit comme gardien.", "Capacité à observer et comprendre des phénomènes qui dépassent les autres personnages."]],
+        ["Évolution dans le Tome I", "Il passe progressivement du rôle de créateur tout-puissant à celui d’un personnage dont les propres choix, erreurs, haines et doutes ont produit des conséquences qu’il ne contrôle plus totalement."],
+        ["Relations majeures", ["Noé : il lui révèle qu’il est spécial et que son pouvoir pourrait changer le destin.", "Nollan : relation fondée sur la connaissance du récit et des événements.", "Garrice : partenaire cosmique lié à la création et à la destruction.", "Maître des Ruines : alter ego sombre issu de sa propre histoire.", "Antoine : celui qui affirme avoir été effacé par l’Omniscient."]],
+        ["Situation à la fin du Tome I", "Présent dans l’Arc 2 comme observateur et révélateur partiel. Il continue à garder certaines vérités hors de portée."]
+      ]
+    },
+    {
+      name: "Garrice", epithet: "Le Destructeur Originel",
+      body: [
+        ["Identité et fonction", "Garrice est présenté comme l’un des deux grands architectes cosmiques de l’œuvre. Sa fonction est associée à la destruction, au changement et aux conséquences de la destruction."],
+        ["Rôle dans l’œuvre", "Force cosmique de destruction et co-architecte de l’univers."],
+        ["Personnalité", "Plus direct que l’Omniscient, mais tout aussi conscient des enjeux cosmiques. Il accepte l’idée que certaines choses doivent être détruites pour permettre un changement."],
+        ["Pouvoirs et capacités", ["Création et destruction à une échelle cosmique.", "Brisure du quatrième mur.", "Voyage entre œuvres et univers.", "Création d’une zone de destruction totale.", "Recréation dans d’autres univers de ce qui a été détruit.", "Vision du futur proche d’environ quelques secondes.", "Capacité à observer des événements à travers plusieurs niveaux de réalité."]],
+        ["Évolution dans le Tome I", "Il reste une figure de puissance et d’observation. Son rapport au futur et aux changements de réalité en fait l’un des rares personnages capables de comprendre les conséquences globales."],
+        ["Relations majeures", ["Omniscient : partenaire et autre architecte.", "Maître des Ruines : lié aux conséquences de la première guerre.", "Neo-Memoria : participant indirect à la reconstruction."]],
+        ["Situation à la fin du Tome I", "Présent comme observateur cosmique ; son rôle devient plus mystérieux à mesure que les failles apparaissent."]
+      ]
+    },
+    {
+      name: "Noé", epithet: "Le Pourfendeur au Ballon Argenté",
+      body: [
+        ["Identité et fonction", "Noé est le principal point de bascule du système de pouvoirs. L’Omniscient le considère comme une anomalie et lui dit qu’il pourrait être le seul capable de changer le destin de l’univers."],
+        ["Rôle dans l’œuvre", "Protagoniste dont le pouvoir évolue en réponse à sa volonté."],
+        ["Personnalité", "Volontaire, combatif et capable de continuer malgré des situations qui devraient le dépasser. Sa force vient autant de sa volonté que de ses transformations."],
+        ["Pouvoirs et capacités", ["LeBron James : force, vitesse, agilité, stratégie et énergie concentrée par le ballon.", "LeBron James Requiem : contrôle accru du terrain et arrêt du temps proportionnel au nombre de rebonds.", "Ballon doré dans la forme Requiem.", "Shaquille O’Neal : transformation géante, puissance et contrôle de la gravité.", "Dunk Cataclysmique : onde de choc et trou noir temporaire.", "Gravity Step : manipulation de la gravité pour se déplacer dans l’air.", "Backboard Breaker : rupture locale de la réalité et blocage temporaire de certaines fuites.", "Shaq Time : multiplication temporaire de la vitesse et de la puissance."]],
+        ["Évolution dans le Tome I", "Sa progression suit trois grandes étapes : LeBron James, LeBron James Requiem puis Shaquille O’Neal. Son évolution culmine lorsqu’il provoque chez Sigma le premier véritable doute sur sa propre supériorité."],
+        ["Relations majeures", ["Omniscient : mentor mystérieux et observateur de son anomalie.", "Sigma : adversaire majeur.", "Nollan : allié et compagnon.", "Lenni : allié.", "Antoine : lié aux révélations sur l’ancien monde."]],
+        ["Situation à la fin du Tome I", "Survivant et protagoniste central. Son pouvoir est présenté comme une clé potentielle du destin."]
+      ]
+    },
+    {
+      name: "Nolann", epithet: "Le Spoileur",
+      body: [
+        ["Identité et fonction", "Nolann est associé au concept de spoiler : savoir ce qui va arriver et transformer cette connaissance en contrainte narrative."],
+        ["Rôle dans l’œuvre", "Stratège capable d’utiliser la connaissance du futur comme arme."],
+        ["Personnalité", "Intelligent, calculateur et conscient de l’effet de ses paroles sur les autres."],
+        ["Pouvoirs et capacités", ["Auto-spoil : prédiction des événements.", "Spoil de l’adversaire : annonce d’un futur possible qui peut contraindre la cible à entrer dans le scénario annoncé.", "Analyse des issues possibles.", "Transformation Berserker.", "En Berserker : taille d’environ 3 mètres et force fortement augmentée, mais perte de ses pouvoirs de spoil.", "Capacité liée à une simulation de League of Legends dans certaines circonstances."]],
+        ["Évolution dans le Tome I", "Il évolue d’un simple personnage connaissant l’avenir vers une figure qui pose la question du libre arbitre : connaître la fin signifie-t-il réellement pouvoir la changer ?"],
+        ["Relations majeures", ["Noé : allié.", "Omniscient : relation de connaissance.", "Sigma : cible de ses analyses et prédictions."]],
+        ["Situation à la fin du Tome I", "Reste l’un des personnages clés du groupe de Noé."]
+      ]
+    },
+    {
+      name: "Lenni", epithet: "Le Ténébreux",
+      body: [
+        ["Identité et fonction", "Le Tome I présente plusieurs graphies du prénom, notamment Lenni/Lenny. Le personnage est associé à la magie sombre, aux illusions et à la connaissance interdite."],
+        ["Rôle dans l’œuvre", "Magicien lié à la connaissance interdite et au Monde des Miroirs Obscurs."],
+        ["Personnalité", "Réservé, mystérieux et extrêmement lié à son passé de mage."],
+        ["Pouvoirs et capacités", ["Illusions.", "Altération de la réalité par la magie.", "Vagues d’énergie sombre.", "Intelligence indiquée à 143.", "Maîtrise avancée de la magie.", "Sort de mort instantanée.", "Utilisation d’un ancien grimoire.", "Utilisation d’un manteau runique."]],
+        ["Évolution dans le Tome I", "Le grand tournant du Tome I est la révélation que le Lenni véritable est le dernier élève de Merlin le Mage Nain et qu’un alter ego sombre avait pris sa place."],
+        ["Relations majeures", ["Merlin : maître et ancien professeur.", "Noé/Nolann : alliés.", "Alter ego : adversaire direct."]],
+        ["Situation à la fin du Tome I", "Le véritable Lenni est revenu et reste lié au mystère des Miroirs Obscurs."]
+      ]
+    },
+    {
+      name: "Monsieur Sigma", epithet: "Labussière",
+      body: [
+        ["Identité et fonction", "Sigma est un ancien combattant et stratège. Son pouvoir majeur, L’Ascension de Sigma, transforme sa croyance en supériorité en mécanisme de combat."],
+        ["Rôle dans l’œuvre", "Combattant dont la puissance dépend de la conviction absolue de supériorité."],
+        ["Personnalité", "Fier, sûr de lui, provocateur et profondément attaché à l’idée de ne jamais perdre."],
+        ["Pouvoirs et capacités", ["Ascension adaptative.", "Augmentation de puissance jusqu’à dépasser l’adversaire.", "Adaptation aux attaques mortelles.", "Manipulation du temps et de la gravité dans sa zone.", "Imposition de règles dans une zone d’environ 100 km.", "Neutralisation ou réduction de certaines capacités adverses."]],
+        ["Évolution dans le Tome I", "Son évolution est paradoxale : plus il devient puissant, plus sa seule faiblesse devient psychologique. Noé provoque cette faille avec la possibilité que quelqu’un puisse être plus fort que lui."],
+        ["Relations majeures", ["Noé : rivalité centrale.", "Barbier Daniel : ancienne humiliation/défaite.", "Nollan : relation avec les prédictions.", "Omniscient : figure qu’il finit par soupçonner."]],
+        ["Situation à la fin du Tome I", "Son histoire se poursuit après la chute de son Ascension et sa récupération de souvenirs partiels."]
+      ]
+    },
+    {
+      name: "Barbier Daniel", epithet: null,
+      body: [
+        ["Identité et fonction", "Daniel est un personnage extrêmement puissant dont les différentes personnalités donnent naissance à plusieurs styles de combat."],
+        ["Rôle dans l’œuvre", "Bras droit d’AWP God et combattant à multiples personnalités."],
+        ["Personnalité", "Brutal, fidèle, parfois silencieux, mais également source d’un humour absurde."],
+        ["Pouvoirs et capacités", ["Forme de base très puissante.", "Tartempion : mouvements chaotiques et imprévisibles.", "Guidon : personnalité plus méthodique.", "Guidon Maléfique : alter ego sombre.", "Tartempion V2 : environ 3,5 m et puissance capable de détruire une grande ville en quelques coups.", "Altération locale des lois physiques en état de rage.", "Rugissement Chaotique.", "Perturbation de la gravité."]],
+        ["Évolution dans le Tome I", "Son système de personnalités devient central avec le conflit entre Guidon Maléfique, Tartempion V2 et Maléficia."],
+        ["Relations majeures", ["AWP God : loyauté absolue.", "Sigma : relation de rivalité passée.", "Louis : montre une supériorité mystérieuse face à lui.", "Kael : lien comique dans le désert."]],
+        ["Situation à la fin du Tome I", "Encore actif et lié aux événements du désert."]
+      ]
+    },
+    {
+      name: "Monsieur Poinson", epithet: "Poinsson",
+      body: [
+        ["Identité et fonction", "Le Tome I utilise les graphies Poinson et Poinsson selon les passages. Il est à l’origine de l’Ordre Électronique."],
+        ["Rôle dans l’œuvre", "Ingénieur électronique devenu mutant technologique."],
+        ["Personnalité", "Très sérieux, analytique et parfois incapable d’accepter que l’univers ne respecte pas ses calculs."],
+        ["Pouvoirs et capacités", ["Contrôle des puces électroniques.", "Contrôle des appareils connectés.", "Pirate informatique.", "Création et contrôle de drones.", "Super Poinsson : niveau de puissance décrit comme capable d’anéantir plusieurs planètes."]],
+        ["Évolution dans le Tome I", "Après sa défaite contre Merlets, il poursuit son projet dans un univers reconstruit et devient un membre du groupe explorant l’Abîme du Néant."],
+        ["Relations majeures", ["Marty : ancien lien professionnel et rivalité.", "Merlets : adversaire principal.", "Dufaud/Daniel/Sigma : compagnons de circonstance dans l’Arc 2."]],
+        ["Situation à la fin du Tome I", "Actif dans l’Arc 2 et présent dans l’Abîme du Néant."]
+      ]
+    },
+    {
+      name: "Monsieur Marty", epithet: null,
+      body: [
+        ["Identité et fonction", "Ancien assistant de Monsieur Poisson selon l’encyclopédie. Il cherche à s’approprier un pouvoir lié au binaire."],
+        ["Rôle dans l’œuvre", "Personnage technologique et rival de Poinson/Poisson."],
+        ["Personnalité", "Intelligent, jaloux, opportuniste et souvent comique."],
+        ["Pouvoirs et capacités", ["Manipulation du binaire.", "Interaction avec matière, machines et données.", "Dispositif permettant de voler ou exploiter le pouvoir binaire.", "Accès complet au pouvoir conditionné par un contact avec Poisson/Poinson ou une partie de son être."]],
+        ["Évolution dans le Tome I", "Sa quête de pouvoir est liée à sa jalousie envers son ancien mentor."],
+        ["Relations majeures", ["Poinson/Poisson : ancien mentor et cible de son appropriation.", "Dufaud/Daniel/Sigma : compagnons de situation.", "Noé et le groupe : indirectement liés aux événements."]],
+        ["Situation à la fin du Tome I", "Présent dans l’Abîme du Néant."]
+      ]
+    },
+    {
+      name: "Monsieur Dufaud", epithet: null,
+      body: [
+        ["Identité et fonction", "Son pouvoir consiste à créer des sols, murs et escaliers."],
+        ["Rôle dans l’œuvre", "Chef d’une organisation criminelle au pouvoir de construction."],
+        ["Personnalité", "Comique, pragmatique à sa manière, mais souvent dépassé par les événements."],
+        ["Pouvoirs et capacités", ["Création de sols.", "Création de murs.", "Création d’escaliers.", "Construction instantanée d’éléments architecturaux."]],
+        ["Évolution dans le Tome I", "Son pouvoir reste volontairement sous-exploité et devient un gag récurrent, notamment autour des escaliers."],
+        ["Relations majeures", ["Madame Merel : bras droit.", "Poinson, Marty, Daniel, Sigma : compagnons de l’Arc 2."]],
+        ["Situation à la fin du Tome I", "Actif dans l’Abîme du Néant puis dans les événements du désert."]
+      ]
+    },
+    {
+      name: "Madame Merel", epithet: null,
+      body: [
+        ["Identité et fonction", "Personnage ambitieux recruté pour sa volonté de puissance malgré des capacités limitées."],
+        ["Rôle dans l’œuvre", "Bras droit de Dufaud et figure comique de l’organisation criminelle."],
+        ["Personnalité", "Ambitieuse, optimiste, persévérante et parfois incohérente."],
+        ["Pouvoirs et capacités", ["Capacités de combat limitées.", "Plans et stratégies improvisées.", "Grande capacité à persévérer malgré l’échec."]],
+        ["Évolution dans le Tome I", "Elle disparaît après l’Apocalypse et son sort devient lié au mystère des disparus."],
+        ["Relations majeures", ["Dufaud : chef.", "Miroir Obscur : possibilité liée à sa disparition."]],
+        ["Situation à la fin du Tome I", "Portée disparue au début de l’Arc 2."]
+      ]
+    },
+    {
+      name: "Monsieur Merlets", epithet: "AWP God",
+      body: [
+        ["Identité et fonction", "Merlets est présenté comme une puissance ancienne et un gardien de l’équilibre. AWP God désigne sa forme/identité supérieure."],
+        ["Rôle dans l’œuvre", "Figure cosmique liée à l’équilibre, à la création et à la destruction."],
+        ["Personnalité", "Imposant, ancien, sûr de sa puissance, mais progressivement plus nuancé dans l’Arc 2."],
+        ["Pouvoirs et capacités", ["Puissance cosmique.", "Création et destruction.", "Manipulation du temps et de l’espace.", "Dragon Lore Sacrée.", "AWP God : capacité décrite comme pouvant anéantir des galaxies.", "Grande expérience des cycles de destruction et de reconstruction."]],
+        ["Évolution dans le Tome I", "Dans l’Arc 2, il révèle avoir perdu une grande partie de ses pouvoirs anciens et devoir compter davantage sur l’expérience et la ruse."],
+        ["Relations majeures", ["Barbier Daniel : bras droit.", "Poinson : adversaire.", "Omniscient/Destructeur : autre niveau cosmique."]],
+        ["Situation à la fin du Tome I", "Présence moins directe mais fondamentale dans l’équilibre de l’univers."]
+      ]
+    },
+    {
+      name: "Le Maître des Ruines", epithet: null,
+      body: [
+        ["Identité et fonction", "Il apparaît dans l’Abîme du Néant comme une silhouette massive et spectrale. Il affirme connaître la fin et le véritable ennemi."],
+        ["Rôle dans l’œuvre", "Figure antagoniste et révélateur des vérités cachées."],
+        ["Personnalité", "Énigmatique, menaçant, prophétique et ambigu."],
+        ["Pouvoirs et capacités", ["Manipulation de fragments de réalités oubliées.", "Manifestation de visions du passé.", "Présence liée aux ruines et aux vestiges.", "Capacité à provoquer une forte réaction de terreur lorsqu’il perçoit une menace supérieure."]],
+        ["Évolution dans le Tome I", "Révélation majeure : le Tome I le présente comme l’alter ego sombre de l’Omniscient, forgé lors de la première guerre à partir de ses haines, idées sombres, doutes et colères."],
+        ["Relations majeures", ["Omniscient : alter ego.", "Poinson et les survivants : témoins de ses révélations.", "Noé/Nollan : indirectement visés par son discours."]],
+        ["Situation à la fin du Tome I", "Son véritable objectif et l’étendue complète de ses capacités restent partiellement mystérieux."]
+      ]
+    },
+    {
+      name: "Antoine", epithet: null,
+      body: [
+        ["Identité et fonction", "Antoine apparaît au Sanctuaire des Mémoires Oubliées et se présente comme « celui que l’Omniscient a effacé »."],
+        ["Rôle dans l’œuvre", "Personnage effacé de l’histoire qui revient depuis une brèche temporelle."],
+        ["Personnalité", "Grave, déterminé et chargé de rancœur."],
+        ["Pouvoirs et capacités", ["Connaissance de la première guerre.", "Connaissance de vérités enfouies.", "Présence liée aux anomalies temporelles."]],
+        ["Évolution dans le Tome I", "Son retour transforme les événements du Tome I en enquête sur ce qui a été supprimé de l’histoire."],
+        ["Relations majeures", ["Omniscient : celui qui l’a effacé selon sa propre déclaration.", "Noé : il le reconnaît immédiatement."]],
+        ["Situation à la fin du Tome I", "Son sort exact reste une question ouverte du Tome I."]
+      ]
+    },
+    {
+      name: "Louis", epithet: null,
+      body: [
+        ["Identité et fonction", "Louis apparaît tard dans l’Arc 2. Il arrête une attaque de Guidon Maléfique d’une seule main et reste extrêmement calme."],
+        ["Rôle dans l’œuvre", "Combattant mystérieux lié au désert et à Zankuro."],
+        ["Personnalité", "Blasé, calme, peu bavard et sûr de lui."],
+        ["Pouvoirs et capacités", ["Force physique manifestement exceptionnelle.", "Maîtrise de Zankuro.", "Connaissance du désert.", "Capacité à rester parfaitement calme face à des menaces extrêmes."]],
+        ["Évolution dans le Tome I", "Il accepte de guider le groupe en échange de la récupération de son sabre."],
+        ["Relations majeures", ["Kael : connaissance ancienne.", "Zankuro : sabre personnel."]],
+        ["Situation à la fin du Tome I", "À la fin du Tome I, il poursuit Kael pour récupérer Zankuro."]
+      ]
+    },
+    {
+      name: "Kael", epithet: null,
+      body: [
+        ["Identité et fonction", "Kael est un grand lézard bipède aux écailles brun-vert marbrées, doté de cinq doigts griffus et d’une posture humanoïde."],
+        ["Rôle dans l’œuvre", "Créature reptilienne rapide du désert."],
+        ["Personnalité", "Râleur, expressif, comique et très énergique."],
+        ["Pouvoirs et capacités", ["Vitesse exceptionnelle.", "Endurance élevée.", "Connaissance du désert.", "Capacité à transporter Zankuro malgré sa taille."]],
+        ["Évolution dans le Tome I", "Il devient le centre d’une poursuite absurde autour du sabre de Louis."],
+        ["Relations majeures", ["Louis : relation ancienne.", "Daniel : capable de le distancer dans le désert.", "Zankuro : l’arme qu’il porte puis fuit avec."]],
+        ["Situation à la fin du Tome I", "En fuite avec Zankuro à la fin du Tome I."]
+      ]
+    },
+    {
+      name: "L’Apocalypse Humaine", epithet: null,
+      body: [
+        ["Identité et fonction", "Silhouette colossale entourée d’obscurité, associée aux catastrophes naturelles et à la fin de l’ancienne réalité."],
+        ["Rôle dans l’œuvre", "Entité/événement ultime de destruction et de transition."],
+        ["Personnalité", "Ce n’est pas un personnage psychologique classique : elle représente la fin, la destruction et la possibilité d’un recommencement."],
+        ["Pouvoirs et capacités", ["Séismes.", "Tempêtes.", "Éruptions.", "Fléaux.", "Vision de l’inéluctable.", "Destruction de l’ancienne réalité."]],
+        ["Évolution dans le Tome I", "Elle constitue le passage entre l’ancien monde et Neo-Memoria."],
+        ["Relations majeures", ["Omniscient et Destructeur : reconstruction après la catastrophe."]],
+        ["Situation à la fin du Tome I", "Son apparition est l’un des événements fondateurs du nouvel univers."]
+      ]
+    }
+  ],
+
+  personnagesSecondaires: [
+    { name: "Merlin le Mage Nain", desc: "Ancien maître de Lenni ; mage extrêmement ancien lié au Monde des Miroirs Obscurs. Son histoire complète reste largement différée." },
+    { name: "Le faux Lenni", desc: "Alter ego sombre du véritable Lenni ; prend sa place et doit être détruit par le vrai Lenni." },
+    { name: "Guidon Maléfique", desc: "Alter ego sombre lié à Barbier Daniel." },
+    { name: "Maléficia", desc: "Transformation/évolution de l’alter ego de Guidon Maléfique, associée à la vitesse et au contrôle." },
+    { name: "Échos de l’Oubli", desc: "Spectres/figures associées aux disparus et aux vestiges du passé dans le lore du Maître des Ruines." }
+  ],
+
+  relationsCles: [
+    { a: "Omniscient ↔ Destructeur Originel", desc: "Deux architectes cosmiques associés à la création, destruction et reconstruction." },
+    { a: "Omniscient ↔ Noé", desc: "Relation de guide/observateur ; Noé est considéré comme une anomalie potentiellement capable de changer le destin." },
+    { a: "Omniscient ↔ Maître des Ruines", desc: "Le Maître des Ruines est révélé comme son alter ego sombre." },
+    { a: "Omniscient ↔ Antoine", desc: "Antoine affirme être celui que l’Omniscient a effacé." },
+    { a: "Lenni ↔ Merlin", desc: "Relation maître/dernier élève." },
+    { a: "Noé ↔ Sigma", desc: "Duel central de l’Arc 2 ; le doute de Sigma permet à Noé de dépasser sa domination." },
+    { a: "Sigma ↔ Daniel", desc: "Ancienne rivalité liée à une défaite et à une humiliation." },
+    { a: "Daniel ↔ AWP God", desc: "Bras droit et fidélité absolue." },
+    { a: "Poinson ↔ Marty", desc: "Ancien rapport maître/assistant transformé en rivalité et appropriation." },
+    { a: "Dufaud ↔ Merel", desc: "Chef et bras droit." },
+    { a: "Louis ↔ Kael", desc: "Relation ancienne, compliquée et comique." },
+    { a: "Louis ↔ Zankuro", desc: "Lien de propriétaire et combattant avec son arme." }
+  ],
+
+  lieux: [
+    { name: "Neo-Memoria", desc: "Nouvelle métropole construite après la destruction de l’ancienne réalité, à partir de fragments et vestiges de mondes disparus." },
+    { name: "Abîme du Néant", desc: "Fragment de l’ancienne réalité situé hors du temps, associé au vide entre matière et antimatière et aux révélations du Maître des Ruines." },
+    { name: "Miroir Obscur", desc: "Dimension parallèle où les disparus peuvent continuer d’exister sous forme d’ombres. Les lieux et les personnes y possèdent des équivalents." },
+    { name: "Monde des Miroirs Obscurs", desc: "Expression utilisée pour désigner l’ensemble de cette dimension et son système de reflets." },
+    { name: "Sanctuaire des Mémoires Oubliées", desc: "Lieu en ruines où le temps semble brisé et où les souvenirs de héros et tyrans apparaissent sous forme d’échos." },
+    { name: "Ancienne bibliothèque", desc: "Lieu où Noé et Nollan découvrent l’Horloge de Réminiscence." },
+    { name: "Amphithéâtre oublié", desc: "Lieu utilisé pour les révélations autour des alter ego et du véritable Lenni." },
+    { name: "Labyrinthe Mécanique", desc: "Lieu lié au retour de Sigma dans Neo-Memoria." },
+    { name: "Ruines de l’ancienne cité", desc: "Terrain associé au combat Noé/Sigma et aux anomalies de temps et de réalité." },
+    { name: "Désert de sel", desc: "Zone de la fin du Tome I, où Louis, Kael et le groupe sont confrontés à des phénomènes anormaux." }
+  ],
+
+  chronologie: [
+    { periode: "Avant le récit", event: "Existence d’une ancienne réalité et de civilisations désormais disparues." },
+    { periode: "Première guerre de l’univers", event: "Événement fondateur associé à l’Omniscient, au Destructeur Originel et à l’origine du Maître des Ruines." },
+    { periode: "Époque des personnages", event: "Développement des différents groupes, pouvoirs, rivalités et alliances." },
+    { periode: "Apocalypse humaine", event: "Catastrophe qui détruit l’ancienne réalité et clôt l’Arc 1." },
+    { periode: "Renouveau", event: "Reconstruction d’une nouvelle réalité et apparition de Neo-Memoria." },
+    { periode: "Après l’Apocalypse", event: "Des survivants et disparus réapparaissent ou deviennent accessibles via des zones et dimensions anormales." },
+    { periode: "Arc 2", event: "Miroir Obscur, Horloge de Réminiscence, Maître des Ruines, retour d’Antoine, Sigma, alter ego, Lenni véritable, Guidon/Maléficia, Louis, Kael et Zankuro." }
+  ],
+
+  evenements: [
+    { name: "Première guerre de l’univers", desc: "Conflit ancien qui sert de fondement aux secrets de l’Omniscient et à la naissance du Maître des Ruines." },
+    { name: "Apocalypse humaine", desc: "Destruction de l’ancienne réalité." },
+    { name: "Création de Neo-Memoria", desc: "Nouvelle réalité reconstruite à partir des vestiges." },
+    { name: "Retour des disparus", desc: "Rumeurs et apparitions qui ouvrent l’intrigue du Miroir Obscur." },
+    { name: "Découverte de l’Horloge", desc: "Noé et Nollan trouvent l’artefact permettant potentiellement de rouvrir le passé." },
+    { name: "Révélation du Maître des Ruines", desc: "Il affirme que Neo-Memoria est un leurre et que l’Omniscient cache une vérité." },
+    { name: "Retour d’Antoine", desc: "Le personnage effacé revient depuis une brèche liée aux souvenirs." },
+    { name: "Duel Noé/Sigma", desc: "Confrontation centrale qui pousse Noé vers Shaquille O’Neal." },
+    { name: "Chute de l’Ascension", desc: "Le doute de Sigma brise sa supériorité absolue." },
+    { name: "Révélation de l’alter ego", desc: "Le Maître des Ruines est lié à la part sombre de l’Omniscient." },
+    { name: "Retour du vrai Lenni", desc: "Le véritable mage détruit son alter ego et révèle son lien avec Merlin." },
+    { name: "Duel des Guidons", desc: "Affrontement entre les formes de Daniel et son alter ego." },
+    { name: "Éveil de Tartempion V2", desc: "Daniel révèle une transformation extrêmement puissante." },
+    { name: "Apparition de Louis", desc: "Il arrête une attaque de Guidon Maléfique d’une seule main." },
+    { name: "Perte de Zankuro", desc: "Louis découvre que son sabre est aux mains de Kael." },
+    { name: "Poursuite dans le désert", desc: "Le groupe poursuit Kael tandis que de nouvelles anomalies apparaissent." }
+  ],
+
+  pouvoirs: [
+    { name: "LeBron James", wielder: "Noé", desc: "Pouvoir initial de Noé : force surhumaine, vitesse, agilité, stratégie de combat et manipulation d’énergie via un ballon." },
+    { name: "LeBron James Requiem", wielder: "Noé", desc: "Évolution de Noé permettant notamment un contrôle accru du terrain et l’arrêt du temps pendant une durée proportionnelle au nombre de rebonds." },
+    { name: "Shaquille O’Neal", wielder: "Noé", desc: "Forme supérieure de Noé : géant d’environ trois mètres, contrôle de la gravité et techniques destructrices." },
+    { name: "Dunk Cataclysmique", wielder: "Noé", desc: "Attaque de Noé combinant impact massif, onde de choc et trou noir temporaire." },
+    { name: "Gravity Step", wielder: "Noé", desc: "Manipulation de la gravité permettant à Noé de se déplacer dans l’air malgré sa masse." },
+    { name: "Backboard Breaker", wielder: "Noé", desc: "Technique qui fracture localement la réalité et peut bloquer temporairement certaines méthodes de fuite ou de téléportation." },
+    { name: "Shaq Time", wielder: "Noé", desc: "Accélération temporaire multipliant la vitesse et la puissance de Noé." },
+    { name: "L’Ascension de Sigma", wielder: "Sigma", desc: "Pouvoir qui adapte Sigma pour rester supérieur tant qu’il croit réellement à sa propre supériorité." },
+    { name: "Tartempion V2", wielder: "Daniel", desc: "Transformation gigantesque et extrêmement destructive de Daniel." },
+    { name: "Maléficia", wielder: "Daniel (Guidon Maléfique)", desc: "Évolution de l’alter ego de Guidon Maléfique." },
+    { name: "Pouvoir du Spoil", wielder: "Nolann", desc: "Capacité de Nolann à connaître/prédire une issue et à influencer le déroulement par la révélation de cette issue." },
+    { name: "Pouvoir du Binaire", wielder: "Marty", desc: "Pouvoir associé à Marty permettant d’interagir avec matière, machines et données." },
+    { name: "Pouvoir électronique de Poinson", wielder: "Poinson", desc: "Contrôle des puces et appareils électroniques, piratage et drones." },
+    { name: "Magie de Lenni", wielder: "Lenni", desc: "Illusions, altération de réalité et magie sombre, renforcées par son héritage de mage." }
+  ],
+
+  objets: [
+    { name: "Horloge de Réminiscence", desc: "Artefact capable de rouvrir les portes du passé et potentiellement de ramener des disparus. Son prix est inconnu." },
+    { name: "Zankuro", desc: "Sabre noir d’environ 2,50 m associé à Louis. Il absorbe la lumière, peut briller dans l’obscurité et possède une puissance de coupe démesurée." },
+    { name: "Kurohagane", desc: "Métal/« fer noir » associé à Zankuro et à sa capacité d’absorber la lumière." },
+    { name: "Grimoire de Lenni", desc: "Livre magique ancien contenant des connaissances et sorts liés à son héritage de mage." },
+    { name: "Manteau runique", desc: "Vêtement sombre couvert de runes antiques, lié à l’apprentissage de Lenni." },
+    { name: "Ballon argenté", desc: "Objet central du pouvoir de Noé dans sa forme LeBron James." },
+    { name: "Ballon doré", desc: "Évolution du ballon dans LeBron James Requiem." }
+  ],
+
+  concepts: [
+    { name: "Les Failles", desc: "Fissures ou anomalies qui affectent la continuité de la réalité, de la mémoire, du temps ou des dimensions." },
+    { name: "Le quatrième mur", desc: "Frontière entre l’univers fictif et le lecteur/spectateur. L’Omniscient et le Destructeur Originel peuvent la franchir." },
+    { name: "Mémoire effacée", desc: "Mécanisme par lequel des événements ou des noms peuvent disparaître de la mémoire des personnages." },
+    { name: "Alter ego", desc: "Version sombre ou alternative d’un personnage, capable de manifester ses possibilités négatives." },
+    { name: "Renouveau", desc: "Nouvel état de réalité créé après l’Apocalypse humaine." },
+    { name: "Destin", desc: "Force thématique liée à la question de savoir si un événement prédit ou écrit peut réellement être changé." },
+    { name: "Spoil", desc: "Connaissance d’un futur possible transformée en outil de combat et de narration." },
+    { name: "Ascension", desc: "Principe de Sigma : sa supériorité devient une loi tant qu’il y croit." },
+    { name: "Réminiscence", desc: "Retour du passé dans le présent, notamment par l’Horloge ou les anomalies." },
+    { name: "Miroir", desc: "Principe selon lequel une réalité peut posséder un reflet dans une autre dimension." },
+    { name: "Apocalypse", desc: "Fin de l’ancienne réalité et transition vers un nouvel univers." }
+  ],
+
+  organisations: [
+    { name: "Ordre Électronique", desc: "Organisation technologique dirigée par Poinson/Poinsson." },
+    { name: "Organisation de Dufaud", desc: "Structure criminelle dirigée par Dufaud et secondée par Madame Merel." },
+    { name: "Groupe de Noé", desc: "Noyau de protagonistes composé notamment de Noé, Nollan et Lenni." },
+    { name: "Entourage d’AWP God", desc: "Groupe associé à Merlets/AWP God et à Barbier Daniel." },
+    { name: "Mondes des Miroirs Obscurs", desc: "Ensemble d’êtres et d’ombres liés à la dimension parallèle." }
+  ],
+
+  chapitres: [
+    { n: 1, title: "Les Vestiges du Passé", desc: "Retour dans la réalité reconstruite et découverte des conséquences de l’Apocalypse." },
+    { n: 2, title: "Le Retour des Perdus", desc: "Rumeurs sur les disparus, Miroir Obscur, Horloge de Réminiscence et première apparition du Maître des Ruines." },
+    { n: 3, title: "L’Ombre de la Vérité", desc: "Le Maître des Ruines expose sa version de la réalité ; Antoine et de nouvelles révélations apparaissent." },
+    { n: 4, title: "Les Cicatrices du Passé", desc: "Les blessures de l’ancien monde continuent de traverser la nouvelle réalité." },
+    { n: 5, title: "Les Pions du Dieu Mensonge", desc: "Confrontation autour de la vérité et du rôle de l’Omniscient." },
+    { n: 6, title: "La Révélation de l’Omniscient", desc: "Noé apprend la nature exceptionnelle de son pouvoir." },
+    { n: 7, title: "Monsieur Sigma entre en scène", desc: "Sigma devient l’adversaire central." },
+    { n: 8, title: "Un Vide dans la Mémoire", desc: "Les personnages réalisent que certains noms et souvenirs ont disparu." },
+    { n: 9, title: "Le Début de l’Ascension", desc: "Sigma active sa supériorité adaptative." },
+    { n: 10, title: "Le pouvoir caché", desc: "Le combat fait émerger des niveaux supérieurs de puissance." },
+    { n: 11, title: "La Singularité de Sigma", desc: "Noé atteint une transformation capable de remettre Sigma en question." },
+    { n: 12, title: "La Prophétie de Nolann", desc: "Nolann intervient par la connaissance du futur." },
+    { n: 13, title: "La Confession de l’AWP God", desc: "Merlets révèle l’état réel de ses pouvoirs." },
+    { n: 14, title: "L’Alter Ego Dévoilé", desc: "Le lien entre Omniscient et Maître des Ruines devient central." },
+    { n: 15, title: "Les Reflets de l’Ombre", desc: "Les alter ego et le faux Lenni sont exposés." },
+    { n: 16, title: "L’Ascension du Véritable Mage", desc: "Le vrai Lenni revient et révèle son héritage." },
+    { n: 17, title: "Le Mage Interdit et le Monde des Miroirs Obscurs", desc: "Le lien de Lenni et Merlin avec cette dimension est approfondi." },
+    { n: 18, title: "Le Duel des Deux Guidons", desc: "Confrontation des versions de Guidon." },
+    { n: 19, title: "L’Éveil de Tartempion", desc: "Tartempion V2 entre en jeu." },
+    { n: 20, title: "Le Jugement du Guidon", desc: "Le conflit atteint un nouveau niveau." },
+    { n: 21, title: "L’Homme qui n’avait pas été invité", desc: "Louis intervient sans être attendu." },
+    { n: 22, title: "Le Marché du Type Perdu", desc: "Louis négocie son aide contre la récupération de Zankuro." },
+    { n: 23, title: "Le Propriétaire Inattendu", desc: "Kael et Zankuro deviennent le nouveau problème du groupe." },
+    { n: 24, title: "Les Zones", desc: "La poursuite se poursuit dans le désert et ouvre une nouvelle menace." }
+  ],
+
+  mysteres: [
+    "Quelle est la vérité complète sur la première guerre de l’univers ?",
+    "Pourquoi l’Omniscient a-t-il effacé Antoine ?",
+    "Que s’est-il réellement passé avant la création de Neo-Memoria ?",
+    "Quelle est la véritable nature des Failles ?",
+    "Quel est le coût réel de l’Horloge de Réminiscence ?",
+    "Que sont exactement les Miroirs Obscurs ?",
+    "Quelle est l’histoire complète de Merlin ?",
+    "Quelle est la véritable limite des pouvoirs de l’Omniscient ?",
+    "Quelle est la limite réelle de l’Ascension de Sigma ?",
+    "Pourquoi le Maître des Ruines connaît-il autant de vérités ?",
+    "Quelle est la menace qui peut terrifier le Maître des Ruines ?",
+    "Quelle est l’histoire complète entre Louis et Kael ?",
+    "Pourquoi Kael possède-t-il/transportait-il Zankuro ?",
+    "Quelles sont les véritables capacités de Louis ?",
+    "Que désignent exactement les « Zones » du dernier chapitre ?"
+  ],
+
+  lexique: [
+    { term: "LES FAILLES", def: "Nom de l’œuvre et concept central de fragilité de la réalité." },
+    { term: "L’Omniscient", def: "Architecte cosmique et figure méta-narrative." },
+    { term: "Destructeur Originel", def: "Garrice ; figure cosmique de destruction et de changement." },
+    { term: "Neo-Memoria", def: "Nouvelle réalité reconstruite après l’Apocalypse." },
+    { term: "Abîme du Néant", def: "Fragment de l’ancienne réalité hors du temps." },
+    { term: "Miroir Obscur", def: "Dimension parallèle des reflets et des âmes perdues." },
+    { term: "Horloge de Réminiscence", def: "Artefact permettant potentiellement de rouvrir le passé." },
+    { term: "Zankuro", def: "Sabre noir gigantesque de Louis." },
+    { term: "Kurohagane", def: "Fer noir associé à Zankuro." },
+    { term: "Ascension de Sigma", def: "Pouvoir de supériorité adaptative." },
+    { term: "LeBron James", def: "Première forme de Noé." },
+    { term: "LeBron James Requiem", def: "Deuxième forme de Noé." },
+    { term: "Shaquille O’Neal", def: "Forme supérieure de Noé." },
+    { term: "Tartempion V2", def: "Forme de puissance extrême de Daniel." },
+    { term: "Maléficia", def: "Forme supérieure de l’alter ego de Guidon." },
+    { term: "Spoil", def: "Pouvoir de prédiction/contrainte de Nolann." },
+    { term: "Apocalypse humaine", def: "Catastrophe qui détruit l’ancienne réalité." }
+  ],
+
+  canon: [
+    { cat: "Omniscient", etat: "Architecte cosmique ; nature méta ; créateur ; part sombre devenue Maître des Ruines." },
+    { cat: "Destructeur Originel", etat: "Co-architecte cosmique ; destruction/recréation." },
+    { cat: "Noé", etat: "Protagoniste ; pouvoir LeBron → Requiem → Shaq." },
+    { cat: "Nolann", etat: "Spoileur et stratège." },
+    { cat: "Lenni", etat: "Véritable mage ; dernier élève de Merlin." },
+    { cat: "Sigma", etat: "Ascension extrêmement puissante mais vulnérable au doute." },
+    { cat: "Daniel", etat: "Combattant multi-personnalités ; Tartempion V2 et alter ego Guidon." },
+    { cat: "Poinson", etat: "Ingénieur mutant ; Ordre Électronique." },
+    { cat: "Marty", etat: "Pouvoir binaire et rivalité avec Poinson/Poisson." },
+    { cat: "Dufaud", etat: "Chef criminel ; pouvoir de construction." },
+    { cat: "Merel", etat: "Bras droit de Dufaud ; disparue." },
+    { cat: "Merlets/AWP God", etat: "Ancienne puissance cosmique ; pouvoirs diminués dans l’Arc 2." },
+    { cat: "Maître des Ruines", etat: "Alter ego sombre de l’Omniscient ; révélateur de secrets." },
+    { cat: "Antoine", etat: "Personnage effacé revenu du passé." },
+    { cat: "Louis", etat: "Combattant mystérieux lié à Zankuro." },
+    { cat: "Kael", etat: "Lézard rapide lié à Louis et Zankuro." },
+    { cat: "Neo-Memoria", etat: "Nouvelle réalité." },
+    { cat: "Miroir Obscur", etat: "Dimension parallèle des disparus." },
+    { cat: "Abîme du Néant", etat: "Fragment d’ancienne réalité hors du temps." }
+  ],
+
+  inspirations: [
+    { name: "Dragon Ball", medium: "Manga / Anime", desc: "Akira Toriyama — série fondatrice du shōnen, connue pour ses arcs de transformation et son escalade de puissance." },
+    { name: "JoJo’s Bizarre Adventure", medium: "Manga / Anime", desc: "Hirohiko Araki — pouvoirs incarnés (Stands), poses iconiques et affrontements où la conviction compte autant que la force." },
+    { name: "Ken le Survivant", medium: "北斗の拳 · Hokuto no Ken", desc: "Tetsuo Hara & Buronson — monde dévasté par l’apocalypse, arts martiaux surhumains et quête de survie." },
+    { name: "Le Seigneur des Anneaux", medium: "Roman", desc: "J.R.R. Tolkien — fantasy épique fondatrice, quête à travers un monde ancien et forces cosmiques immémoriales." },
+    { name: "Marvel", medium: "Comics / Films", desc: "Univers partagé de super-héros, multivers, entités cosmiques et affrontements à l’échelle de la réalité." },
+    { name: "Harry Potter", medium: "Roman", desc: "J.K. Rowling — magie, grimoires, mentors et un monde caché derrière le nôtre." }
+  ],
+
+  zones: [
+    { name: "Désert de sel", desc: "Zone frontière, la plus instable. Son énergie est chaotique : elle s’accumule, se décharge et se réorganise constamment. Les créatures qui y vivent sont adaptées à ce chaos." },
+    { name: "Zones habitées", desc: "Villages et communautés. L’énergie y est plus douce, équilibrée et facile à vivre. Le village le plus proche se trouve dans cette catégorie." },
+    { name: "Montagnes vertigineuses", desc: "Au nord. L’énergie y est dense et compressée, comme si l’altitude l’avait concentrée pendant des millénaires. La puissance des créatures y est moins explosive mais plus profonde et durable." },
+    { name: "Capitale — Neo-Memoria", desc: "Au centre. Son énergie contient des traces de toutes les autres Zones. Elle est instable autrement que le désert : elle semble être « sous pression »." }
+  ],
+
+  questionsZones: [
+    "Quelle est l’origine de l’énergie des Zones ?",
+    "Les Zones existaient-elles avant Neo-Memoria ?",
+    "Pourquoi la capitale contient-elle les traces des autres Zones ?",
+    "Que signifie exactement la capitale « sous pression » ?",
+    "Existe-t-il d’autres Zones que les quatre présentées ?",
+    "Peut-on acquérir une affinité avec une Zone sans y être né ?",
+    "Que se passe-t-il lorsqu’un étranger reste longtemps dans une Zone qui le fragilise ?",
+    "Existe-t-il un moyen de neutraliser l’énergie d’une Zone ?",
+    "Quelle est réellement la Zone d’origine de Louis ?"
+  ],
+
+  reglesZones: [
+    { regle: "Chaque Zone possède sa propre énergie.", etat: "Établi" },
+    { regle: "Les natifs peuvent être amplifiés par leur Zone.", etat: "Établi" },
+    { regle: "Capacités, instincts et résistances peuvent être renforcés.", etat: "Établi" },
+    { regle: "Un étranger peut être neutre ou fragilisé.", etat: "Établi" },
+    { regle: "Le Désert de sel possède une énergie chaotique.", etat: "Établi" },
+    { regle: "Les tornades du désert manifestent cette énergie.", etat: "Établi" },
+    { regle: "Kael est avantagé dans le Désert de sel.", etat: "Établi" },
+    { regle: "Neo-Memoria contient des traces des autres Zones.", etat: "Établi" },
+    { regle: "Le nombre total de Zones est définitivement limité à quatre.", etat: "Non confirmé" },
+    { regle: "L’origine de l’énergie est expliquée.", etat: "Non révélé" },
+    { regle: "La Zone d’origine de Louis est connue.", etat: "Non révélé" }
+  ]
+};
+</script>
+<script>
+(function(){
+  const C = window.CODEX;
+
+  const TABS = [
+    { id:"personnages", label:"Personnages", accent:"violet" },
+    { id:"univers", label:"Univers & Chronologie", accent:"mirror" },
+    { id:"pouvoirs", label:"Pouvoirs & Techniques", accent:"ember" },
+    { id:"objets", label:"Objets", accent:"violet" },
+    { id:"concepts", label:"Concepts", accent:"mirror" },
+    { id:"organisations", label:"Organisations", accent:"ember" },
+    { id:"chapitres", label:"Chapitres — Arc 2", accent:"violet" },
+    { id:"annexes", label:"Annexes", accent:"mirror" },
+    { id:"inspirations", label:"Inspirations", accent:"ember" }
+  ];
+
+  function esc(s){
+    return String(s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function el(tag, cls){
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    return e;
+  }
+
+  function renderBody(bodyArr){
+    return bodyArr.map(([label, content]) => {
+      let inner;
+      if (Array.isArray(content)) {
+        if (label === "Relations majeures") {
+          inner = '<ul class="rel-list">' + content.map(s => {
+            const idx = s.indexOf(" : ");
+            if (idx > -1) return `<li><strong>${esc(s.slice(0, idx))}</strong> — ${esc(s.slice(idx + 3))}</li>`;
+            return `<li>${esc(s)}</li>`;
+          }).join('') + '</ul>';
+        } else {
+          inner = '<ul class="bullet-list">' + content.map(s => `<li>${esc(s)}</li>`).join('') + '</ul>';
+        }
+      } else {
+        inner = `<p>${esc(content)}</p>`;
+      }
+      return `<div class="field"><h4>${esc(label)}</h4>${inner}</div>`;
+    }).join('');
+  }
+
+  function renderCharacterEntry(c){
+    const art = el('article', 'entry');
+    art.dataset.search = (c.name + ' ' + (c.epithet || '') + ' ' + c.body.map(b => Array.isArray(b[1]) ? b[1].join(' ') : b[1]).join(' ')).toLowerCase();
+    const head = el('button', 'entry-head');
+    head.type = 'button';
+    head.setAttribute('aria-expanded', 'false');
+    head.innerHTML = `<span class="entry-name">${esc(c.name)}</span>${c.epithet ? `<span class="entry-epithet">${esc(c.epithet)}</span>` : ''}<span class="entry-chevron" aria-hidden="true">+</span>`;
+    const body = el('div', 'entry-body');
+    body.hidden = true;
+    body.innerHTML = renderBody(c.body);
+    head.addEventListener('click', () => {
+      const open = head.getAttribute('aria-expanded') === 'true';
+      head.setAttribute('aria-expanded', String(!open));
+      body.hidden = open;
+      art.classList.toggle('open', !open);
+    });
+    art.appendChild(head);
+    art.appendChild(body);
+    return art;
+  }
+
+  function renderCard(name, desc, searchExtra){
+    const card = el('div', 'card');
+    card.dataset.search = (name + ' ' + desc + ' ' + (searchExtra || '')).toLowerCase();
+    card.innerHTML = `<h4>${esc(name)}</h4><p>${esc(desc)}</p>`;
+    return card;
+  }
+
+  function renderPowerCard(p){
+    const card = el('div', 'card');
+    card.dataset.search = (p.name + ' ' + p.wielder + ' ' + p.desc).toLowerCase();
+    card.innerHTML = `<div class="card-top"><h4>${esc(p.name)}</h4><span class="badge">${esc(p.wielder)}</span></div><p>${esc(p.desc)}</p>`;
+    return card;
+  }
+
+  function section(title, sub){
+    const s = el('section');
+    const h = el('h2'); h.textContent = title;
+    s.appendChild(h);
+    if (sub){ const p = el('p', 'section-sub'); p.textContent = sub; s.appendChild(p); }
+    return s;
+  }
+
+  function buildPersonnages(panel){
+    const s1 = section('Personnages principaux', 'Cliquer une fiche pour la déplier.');
+    const grid1 = el('div');
+    C.personnagesPrincipaux.forEach(c => grid1.appendChild(renderCharacterEntry(c)));
+    s1.appendChild(grid1);
+    panel.appendChild(s1);
+
+    const s2 = section('Figures complémentaires');
+    const grid2 = el('div', 'card-grid');
+    C.personnagesSecondaires.forEach(f => grid2.appendChild(renderCard(f.name, f.desc)));
+    s2.appendChild(grid2);
+    panel.appendChild(s2);
+
+    const s3 = section('Relations clés');
+    const grid3 = el('div', 'card-grid');
+    C.relationsCles.forEach(r => grid3.appendChild(renderCard(r.a, r.desc)));
+    s3.appendChild(grid3);
+    panel.appendChild(s3);
+  }
+
+  function buildUnivers(panel){
+    const s1 = section('Lieux, mondes et dimensions');
+    const grid1 = el('div', 'card-grid');
+    C.lieux.forEach(l => grid1.appendChild(renderCard(l.name, l.desc)));
+    s1.appendChild(grid1);
+    panel.appendChild(s1);
+
+    const sZones = section('Système des Zones', 'Dossier indépendant fondé sur le chapitre 24, « Les Zones », où Louis explique le fonctionnement de Neo-Memoria à Poinson, Marty, Barbier Daniel et Dufaud.');
+    const zonesProse = el('div', 'prose');
+    zonesProse.innerHTML = `
+      <p>Neo-Memoria n’est pas seulement une ville ou un territoire. C’est un monde divisé en zones distinctes, chacune avec ses propres règles, son environnement et surtout sa propre énergie — qui peut renforcer ou fragiliser les êtres qui la traversent.</p>
+      <p>Un être né dans une Zone et qui en fait partie peut voir ses capacités décuplées, ses instincts affûtés et ses résistances augmentées. Un étranger subit l’énergie sans nécessairement en bénéficier : dans le meilleur des cas elle ne change rien, dans le pire elle le fragilise. On distingue ainsi trois situations&nbsp;: natif ou fortement lié à la Zone&nbsp;; étranger neutre&nbsp;; étranger défavorisé par l’énergie locale.</p>
+    `;
+    sZones.appendChild(zonesProse);
+
+    const zonesTable = el('table', 'canon-table');
+    zonesTable.dataset.search = C.zones.map(z => z.name + ' ' + z.desc).join(' ').toLowerCase();
+    zonesTable.innerHTML = '<thead><tr><th>Zone</th><th>Caractéristiques</th></tr></thead>';
+    const zonesBody = el('tbody');
+    C.zones.forEach(z => {
+      const tr = el('tr');
+      tr.innerHTML = `<td>${esc(z.name)}</td><td>${esc(z.desc)}</td>`;
+      zonesBody.appendChild(tr);
+    });
+    zonesTable.appendChild(zonesBody);
+    sZones.appendChild(zonesTable);
+
+    const zonesProse2 = el('div', 'prose');
+    zonesProse2.innerHTML = `
+      <h4>Cas d’étude — le Désert de sel</h4>
+      <p>Le climat y change très rapidement ; les tornades sont décrites comme une manifestation directe de son énergie chaotique, qui s’accumule, se décharge puis se réorganise. Les créatures natives sont construites pour ce fonctionnement&nbsp;: Kael en est l’exemple — dans son environnement, il court plus vite, voit mieux et sent mieux, ce qui explique notamment pourquoi il parvient à semer Barbier Daniel.</p>
+      <h4>Zones et puissance</h4>
+      <p>Le Tome I établit que l’énergie locale peut amplifier ou fragiliser un individu, mais ne fournit aucune formule chiffrée permettant de calculer cette variation. Les valeurs précises restent inconnues.</p>
+      <h4>La capitale — Neo-Memoria</h4>
+    `;
+    sZones.appendChild(zonesProse2);
+
+    const capQuote = el('div', 'quote-block');
+    capQuote.textContent = "La capitale possède une énergie particulière : elle contient des traces des autres Zones. Son instabilité n’est pas décrite comme chaotique mais comme une pression contenue, comme si quelque chose était retenu.";
+    sZones.appendChild(capQuote);
+
+    const zonesProse3 = el('div', 'prose');
+    zonesProse3.innerHTML = `
+      <p>Le Tome I ne donne pas d’explication définitive sur ce que cette pression retient.</p>
+      <h4>Le cas de Louis</h4>
+    `;
+    sZones.appendChild(zonesProse3);
+
+    const louisQuote = el('div', 'quote-block');
+    louisQuote.textContent = "Lorsque Dufaud lui demande à quelle Zone il appartient, Louis ne répond pas directement. Après un silence, il dit seulement : « C’est une bonne question. »";
+    sZones.appendChild(louisQuote);
+
+    const zonesProse4 = el('div', 'prose');
+    const p4 = el('p');
+    p4.textContent = 'Son origine zonale reste donc inconnue à la fin du Tome I.';
+    zonesProse4.appendChild(p4);
+    sZones.appendChild(zonesProse4);
+
+    const zonesQTitle = el('h4', 'subsection-title');
+    zonesQTitle.textContent = 'Questions ouvertes sur les Zones';
+    sZones.appendChild(zonesQTitle);
+    const zonesQ = el('ul', 'mystery-list');
+    C.questionsZones.forEach(q => {
+      const li = el('li');
+      li.dataset.search = q.toLowerCase();
+      li.textContent = q;
+      zonesQ.appendChild(li);
+    });
+    sZones.appendChild(zonesQ);
+
+    const zonesRTitle = el('h4', 'subsection-title');
+    zonesRTitle.textContent = 'Règles établies';
+    sZones.appendChild(zonesRTitle);
+    const zonesRTable = el('table', 'canon-table');
+    zonesRTable.innerHTML = '<thead><tr><th>Règle</th><th>État</th></tr></thead>';
+    const zonesRBody = el('tbody');
+    const statusClass = { "Établi": "status-etabli", "Non confirmé": "status-nonconfirme", "Non révélé": "status-nonrevele" };
+    C.reglesZones.forEach(r => {
+      const tr = el('tr');
+      tr.dataset.search = (r.regle + ' ' + r.etat).toLowerCase();
+      tr.innerHTML = `<td>${esc(r.regle)}</td><td><span class="status-pill ${statusClass[r.etat] || ''}">${esc(r.etat)}</span></td>`;
+      zonesRBody.appendChild(tr);
+    });
+    zonesRTable.appendChild(zonesRBody);
+    sZones.appendChild(zonesRTable);
+
+    panel.appendChild(sZones);
+
+    const s2 = section('Chronologie générale');
+    const tl = el('div', 'timeline');
+    C.chronologie.forEach(c => {
+      const row = el('div', 'timeline-row');
+      row.dataset.search = (c.periode + ' ' + c.event).toLowerCase();
+      row.innerHTML = `<div class="timeline-period">${esc(c.periode)}</div><div class="timeline-event">${esc(c.event)}</div>`;
+      tl.appendChild(row);
+    });
+    s2.appendChild(tl);
+    panel.appendChild(s2);
+
+    const s3 = section('Événements majeurs du Tome I');
+    const grid3 = el('div', 'card-grid');
+    C.evenements.forEach(e => grid3.appendChild(renderCard(e.name, e.desc)));
+    s3.appendChild(grid3);
+    panel.appendChild(s3);
+  }
+
+  function buildPouvoirs(panel){
+    const s1 = section('Pouvoirs, formes et techniques');
+    const grid = el('div', 'card-grid');
+    C.pouvoirs.forEach(p => grid.appendChild(renderPowerCard(p)));
+    s1.appendChild(grid);
+    panel.appendChild(s1);
+  }
+
+  function buildObjets(panel){
+    const s1 = section('Objets et artefacts');
+    const grid = el('div', 'card-grid');
+    C.objets.forEach(o => grid.appendChild(renderCard(o.name, o.desc)));
+    s1.appendChild(grid);
+    panel.appendChild(s1);
+  }
+
+  function buildConcepts(panel){
+    const s1 = section('Concepts fondamentaux');
+    const grid = el('div', 'card-grid');
+    C.concepts.forEach(c => grid.appendChild(renderCard(c.name, c.desc)));
+    s1.appendChild(grid);
+    panel.appendChild(s1);
+  }
+
+  function buildOrganisations(panel){
+    const s1 = section('Organisations et factions');
+    const grid = el('div', 'card-grid');
+    C.organisations.forEach(o => grid.appendChild(renderCard(o.name, o.desc)));
+    s1.appendChild(grid);
+    panel.appendChild(s1);
+  }
+
+  function buildChapitres(panel){
+    const s1 = section('Arc 2 — chapitre par chapitre', '24 chapitres, du retour dans Neo-Memoria à la poursuite dans le désert.');
+    const list = el('ul', 'chap-list-codex');
+    C.chapitres.forEach(ch => {
+      const li = el('li');
+      li.dataset.search = (ch.n + ' ' + ch.title + ' ' + ch.desc).toLowerCase();
+      li.innerHTML = `<span class="chap-num mono">${ch.n}</span><div><div class="chap-title">${esc(ch.title)}</div><div class="chap-desc">${esc(ch.desc)}</div></div>`;
+      list.appendChild(li);
+    });
+    s1.appendChild(list);
+    panel.appendChild(s1);
+  }
+
+  function buildAnnexes(panel){
+    const s1 = section('Mystères laissés ouverts à la fin du Tome I');
+    const ml = el('ul', 'mystery-list');
+    C.mysteres.forEach(m => {
+      const li = el('li');
+      li.dataset.search = m.toLowerCase();
+      li.textContent = m;
+      ml.appendChild(li);
+    });
+    s1.appendChild(ml);
+    panel.appendChild(s1);
+
+    const s2 = section('Lexique de référence');
+    const lg = el('div', 'lex-grid');
+    C.lexique.forEach(l => {
+      const row = el('div', 'lex-item');
+      row.dataset.search = (l.term + ' ' + l.def).toLowerCase();
+      row.innerHTML = `<span class="lex-term">${esc(l.term)}</span><span class="lex-def">${esc(l.def)}</span>`;
+      lg.appendChild(row);
+    });
+    s2.appendChild(lg);
+    panel.appendChild(s2);
+
+    const s3 = section('Tableau du canon établi');
+    const table = el('table', 'canon-table');
+    table.innerHTML = '<thead><tr><th>Catégorie</th><th>État à la fin du Tome I</th></tr></thead>';
+    const tbody = el('tbody');
+    C.canon.forEach(c => {
+      const tr = el('tr');
+      tr.dataset.search = (c.cat + ' ' + c.etat).toLowerCase();
+      tr.innerHTML = `<td>${esc(c.cat)}</td><td>${esc(c.etat)}</td>`;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    s3.appendChild(table);
+    panel.appendChild(s3);
+  }
+
+  function buildInspirations(panel){
+    const s1 = section('Inspirations', 'Références citées par l’auteur — la source elle-même, pas une liste d’emprunts précis.');
+    const grid = el('div', 'card-grid');
+    C.inspirations.forEach(i => {
+      const card = el('div', 'card');
+      card.dataset.search = (i.name + ' ' + i.medium + ' ' + i.desc).toLowerCase();
+      card.innerHTML = `<div class="card-top"><h4>${esc(i.name)}</h4><span class="badge">${esc(i.medium)}</span></div><p>${esc(i.desc)}</p>`;
+      grid.appendChild(card);
+    });
+    s1.appendChild(grid);
+    panel.appendChild(s1);
+  }
+
+  const BUILDERS = {
+    personnages: buildPersonnages,
+    univers: buildUnivers,
+    pouvoirs: buildPouvoirs,
+    objets: buildObjets,
+    concepts: buildConcepts,
+    organisations: buildOrganisations,
+    chapitres: buildChapitres,
+    annexes: buildAnnexes,
+    inspirations: buildInspirations
+  };
+
+  const tabsInner = document.getElementById('tabsInner');
+  const main = document.getElementById('main');
+  const panels = {};
+
+  TABS.forEach((t, i) => {
+    const btn = el('button', 'tab-btn' + (i === 0 ? ' active' : ''));
+    btn.type = 'button';
+    btn.textContent = t.label;
+    btn.dataset.tab = t.id;
+    btn.dataset.accent = t.accent;
+    tabsInner.appendChild(btn);
+
+    const panel = el('div', 'tab-panel');
+    panel.id = 'panel-' + t.id;
+    panel.hidden = i !== 0;
+    BUILDERS[t.id](panel);
+    main.appendChild(panel);
+    panels[t.id] = panel;
+
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      Object.keys(panels).forEach(id => { panels[id].hidden = id !== t.id; });
+      const search = document.getElementById('search');
+      search.value = '';
+      applyFilter();
+      btn.scrollIntoView({ block: 'nearest', inline: 'center' });
+    });
+  });
+
+  function applyFilter(){
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    const activePanel = Object.values(panels).find(p => !p.hidden);
+    if (!activePanel) return;
+    const items = activePanel.querySelectorAll('[data-search]');
+    let anyVisible = false;
+    items.forEach(it => {
+      const match = !q || it.dataset.search.includes(q);
+      it.hidden = !match;
+      if (match) anyVisible = true;
+    });
+    let empty = activePanel.querySelector('.empty-state');
+    if (items.length && !anyVisible) {
+      if (!empty) {
+        empty = el('p', 'empty-state');
+        empty.textContent = 'Aucun résultat pour cette recherche.';
+        activePanel.appendChild(empty);
+      }
+      empty.hidden = false;
+    } else if (empty) {
+      empty.hidden = true;
+    }
+  }
+
+  document.getElementById('search').addEventListener('input', applyFilter);
+})();
+</script>
