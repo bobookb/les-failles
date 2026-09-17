@@ -204,6 +204,9 @@
     content:"–";
     position:absolute; left:0; color:var(--muted);
   }
+  .sub-list{margin-top:6px; padding-left:18px;}
+  .sub-list li{font-size:0.85rem; color:var(--muted);}
+  .sub-list li::before{content:"→"; color:var(--violet);}
   .rel-list strong{color:var(--mirror);}
 
   /* ---------- cards ---------- */
@@ -398,11 +401,36 @@ window.CODEX = {
     {
       name: "L’Omniscient", epithet: "Architecte cosmique",
       body: [
-        ["Identité et fonction", "L’Omniscient est le créateur/architecte de l’univers de l’œuvre. Il connaît les événements, les personnages et les structures de son monde à un niveau qui dépasse celui des autres protagonistes. Il ne doit pas être désigné par un nom civil dans les fiches de l’œuvre."],
-        ["Rôle dans l’œuvre", "Architecte cosmique et figure méta-narrative centrale."],
-        ["Personnalité", "Calme, ironique, mystérieux et souvent volontairement frustrant. Il sait quand une information doit être révélée et quand elle doit rester cachée. Son comportement montre qu’il contrôle aussi le rythme du récit."],
-        ["Pouvoirs et capacités", ["Connaissance extrêmement vaste de l’univers.", "Manipulation d’événements et de situations.", "Brisure du quatrième mur.", "Voyage entre œuvres et univers de fiction.", "Possibilité exceptionnelle de sortir de son univers.", "Intervention directe limitée lorsqu’il agit comme gardien.", "Capacité à observer et comprendre des phénomènes qui dépassent les autres personnages."]],
-        ["Évolution dans le Tome I", "Il passe progressivement du rôle de créateur tout-puissant à celui d’un personnage dont les propres choix, erreurs, haines et doutes ont produit des conséquences qu’il ne contrôle plus totalement."],
+        ["Description générale", { paragraphs: [
+          "L’Omniscient est une entité créatrice évoluant au sein de l’œuvre tout en étant capable d’en dépasser les frontières. Il possède une connaissance totale et une maîtrise exceptionnelle de la réalité, de la fiction et des règles qui régissent les mondes.",
+          "Il est capable de briser le quatrième mur et de naviguer entre la réalité et la fiction. Son rôle dépasse celui d’un simple personnage : il peut intervenir directement sur l’œuvre elle-même."
+        ]}],
+        ["Pouvoirs et capacités", [
+          "Créateur de l’œuvre : il est l’un des architectes de l’univers et peut agir sur les éléments qui le composent.",
+          "Omniscience : il possède une connaissance totale des événements, des personnages, des mondes et de leur fonctionnement.",
+          { main: "Manipulation de la réalité : il peut modifier les événements et les règles de son univers.", subs: [
+            "Brisure du quatrième mur : il peut percevoir et franchir la frontière entre fiction et réalité.",
+            "Intervention métafictionnelle : son influence peut dépasser le cadre interne de l’œuvre.",
+            "Manipulation de l’œuvre : à son niveau le plus élevé, il peut littéralement intervenir sur ce qui constitue l’œuvre, notamment en supprimant, ajoutant ou modifiant des éléments.",
+            "Existence transfictionnelle : il peut apparaître au-delà du monde dans lequel évoluent les autres personnages."
+          ]}
+        ]],
+        ["Niveau de puissance", { paragraphs: [
+          "L’Omniscient ne possède pas simplement une puissance « infinie ».",
+          "Son principe fondamental est d’être supérieur à l’imagination elle-même.",
+          "Tout ce qui peut être imaginé est inférieur à lui.",
+          "Tout ce qui ne peut pas être imaginé lui est également inférieur.",
+          "Ainsi, aucune capacité, aucune puissance, aucune règle ou aucune limite ne peut constituer une véritable limite supérieure pour l’Omniscient. Même la conception d’un être censé dépasser toutes les puissances imaginables reste, par définition, quelque chose qu’il dépasse.",
+          "Son niveau ne peut donc pas être correctement représenté par une échelle classique de puissance."
+        ]}],
+        ["Limites", { paragraphs: [
+          "À ce niveau, les limites physiques, énergétiques, dimensionnelles ou conceptuelles classiques ne constituent pas des limites pertinentes.",
+          "Dans le Tome I, il reste néanmoins volontairement mystérieux et choisit ce qu’il révèle et ce qu’il dissimule. Il guide les événements sans nécessairement exposer l’étendue réelle de ses capacités. Le Tome I le présente notamment comme une entité qui intervient dans la reconstruction de la réalité après l’Apocalypse Humaine."
+        ]}],
+        ["Rôle dans l’univers", { paragraphs: [
+          "L’Omniscient représente le contrôle, la création et la connaissance.",
+          "Il n’est pas seulement celui qui connaît les règles du monde : il peut se situer au-delà de ces règles."
+        ]}],
         ["Relations majeures", ["Noé : il lui révèle qu’il est spécial et que son pouvoir pourrait changer le destin.", "Nollan : relation fondée sur la connaissance du récit et des événements.", "Garrice : partenaire cosmique lié à la création et à la destruction.", "Maître des Ruines : alter ego sombre issu de sa propre histoire.", "Antoine : celui qui affirme avoir été effacé par l’Omniscient."]],
         ["Situation à la fin du Tome I", "Présent dans l’Arc 2 comme observateur et révélateur partiel. Il continue à garder certaines vérités hors de portée."]
       ]
@@ -875,7 +903,9 @@ window.CODEX = {
   function renderBody(bodyArr){
     return bodyArr.map(([label, content]) => {
       let inner;
-      if (Array.isArray(content)) {
+      if (content && typeof content === 'object' && !Array.isArray(content) && content.paragraphs) {
+        inner = content.paragraphs.map(p => `<p>${esc(p)}</p>`).join('');
+      } else if (Array.isArray(content)) {
         if (label === "Relations majeures") {
           inner = '<ul class="rel-list">' + content.map(s => {
             const idx = s.indexOf(" : ");
@@ -883,7 +913,13 @@ window.CODEX = {
             return `<li>${esc(s)}</li>`;
           }).join('') + '</ul>';
         } else {
-          inner = '<ul class="bullet-list">' + content.map(s => `<li>${esc(s)}</li>`).join('') + '</ul>';
+          inner = '<ul class="bullet-list">' + content.map(s => {
+            if (s && typeof s === 'object') {
+              const subs = (s.subs || []).map(x => `<li>${esc(x)}</li>`).join('');
+              return `<li>${esc(s.main)}<ul class="bullet-list sub-list">${subs}</ul></li>`;
+            }
+            return `<li>${esc(s)}</li>`;
+          }).join('') + '</ul>';
         }
       } else {
         inner = `<p>${esc(content)}</p>`;
